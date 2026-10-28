@@ -1,1 +1,1 @@
-main.yml
+alfredo-bot
