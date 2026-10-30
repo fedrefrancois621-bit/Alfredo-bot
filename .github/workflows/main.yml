@@ -21,25 +21,23 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-            - name: Find Gradle Wrapper
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Check project files
         run: |
-          echo "Checking for gradlew..."
           pwd
           ls -la
-          find . -type f -name gradlew
+          ls -la app
 
       - name: Build APK
-        run: |
-          WRAPPER=$(find . -type f -name gradlew -print -quit)
-          if [ -z "$WRAPPER" ]; then
-            echo "ERROR: gradlew not found"
-            exit 1
-          fi
-          chmod +x "$WRAPPER"
-          "$WRAPPER" assembleDebug
+        run: gradle assembleDebug --no-daemon
 
       - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: AlfredoBot-APK
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
