@@ -21,10 +21,22 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+            - name: Find Gradle Wrapper
+        run: |
+          echo "Checking for gradlew..."
+          pwd
+          ls -la
+          find . -type f -name gradlew
+
       - name: Build APK
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          WRAPPER=$(find . -type f -name gradlew -print -quit)
+          if [ -z "$WRAPPER" ]; then
+            echo "ERROR: gradlew not found"
+            exit 1
+          fi
+          chmod +x "$WRAPPER"
+          "$WRAPPER" assembleDebug
 
       - name: Save APK
         uses: actions/upload-artifact@v4
